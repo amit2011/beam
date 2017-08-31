@@ -94,9 +94,10 @@ public class MNetfromR5_V2 {
 			long osmID =  cursor.getOSMID();  // id of edge in the OSM db
 			Way way = ways.get(osmID);
 //			int lanes = Integer.valueOf(way.getTag("lanes"));
-			Integer idx = cursor.getEdgeIndex();
+//			Integer idx = cursor.getEdgeIndex();
+			//TODO - length needs to be transformed to output CRS
 			double length = cursor.getLengthM();
-			double speed = cursor.getSpeedMs();
+//			double speed = cursor.getSpeedMs();
 			// Get start and end coordinates for the edge
 			Coordinate tempFromCoord =  cursor.getGeometry().getCoordinate();
 			Coord fromCoord = transformCRS(new Coord(tempFromCoord.x, tempFromCoord.y));  // MATSim coord
@@ -111,6 +112,7 @@ public class MNetfromR5_V2 {
 			// Make and add the link (only if way exists)
 
 			if (way != null){
+				System.out.println(way.getTag("highway"));
 				OTM.createLink(way, osmID, fromNode, toNode, length, flagStrings);
 			}
 
