@@ -12,7 +12,6 @@ import org.matsim.api.core.v01.network.Network;
 import org.matsim.api.core.v01.network.NetworkWriter;
 import org.matsim.api.core.v01.network.Node;
 import org.matsim.core.network.NetworkUtils;
-import org.matsim.core.network.algorithms.NetworkCleaner;
 import org.matsim.core.utils.geometry.transformations.GeotoolsTransformation;
 
 import java.io.File;
@@ -79,19 +78,19 @@ public class MNetfromR5_V2 {
 			// Check if this edge permits any of the desired modes.
 			EnumSet<EdgeStore.EdgeFlag> flags = cursor.getFlags();
 			flags.retainAll(this.modeFlags);
-			if (flags.isEmpty()){
+			if (flags.isEmpty()) {
 				log.info("EDGE SKIPPED - no allowable modes");
 				continue;
 			}
 			// Convert flags to strings that the MATSim network will recognize.
 			HashSet<String> flagStrings = new HashSet<>();
-			for (EdgeStore.EdgeFlag eF : flags){
+			for (EdgeStore.EdgeFlag eF : flags) {
 				flagStrings.add(flagToString(eF));
 			}
 			////
 			//Add the edge and its nodes
 			////
-			long osmID =  cursor.getOSMID();  // id of edge in the OSM db
+			long osmID = cursor.getOSMID();  // id of edge in the OSM db
 			Way way = ways.get(osmID);
 //			int lanes = Integer.valueOf(way.getTag("lanes"));
 //			Integer idx = cursor.getEdgeIndex();
@@ -99,7 +98,7 @@ public class MNetfromR5_V2 {
 			double length = cursor.getLengthM();
 //			double speed = cursor.getSpeedMs();
 			// Get start and end coordinates for the edge
-			Coordinate tempFromCoord =  cursor.getGeometry().getCoordinate();
+			Coordinate tempFromCoord = cursor.getGeometry().getCoordinate();
 			Coord fromCoord = transformCRS(new Coord(tempFromCoord.x, tempFromCoord.y));  // MATSim coord
 			Coordinate[] tempCoords = cursor.getGeometry().getCoordinates();
 			Coordinate tempToCoord = tempCoords[tempCoords.length - 1];
@@ -111,28 +110,10 @@ public class MNetfromR5_V2 {
 			// TODO - implications of having null way values still not clear to me. Can we really just skip them?
 			// Make and add the link (only if way exists)
 
-			if (way != null){
+			if (way != null) {
 				System.out.println(way.getTag("highway"));
 				OTM.createLink(way, osmID, fromNode, toNode, length, flagStrings);
 			}
-
-
-
-//			// Make the link and add it to mNetwork. Uses the same Id<Link> as the cursor index
-//			Id<Link> linkId = Id.createLinkId(idx);
-//			//why should we ever see the same linkID twice? This would mean we are seeing the same cursor.getEdgeIndex() value, i.e. repeating R5 edges
-//			if (!this.mNetowrk.getLinks().containsKey(linkId)){  // New link
-//				Link r5Link = NetworkUtils.createLink(Id.createLinkId(idx.toString()), fromNode, toNode, mNetowrk, length, speed, 1.0, lanes);
-//				r5Link.setAllowedModes(flagStrings);
-//				this.mNetowrk.addLink(r5Link);
-//			} else {
-//				// Link already exists. Add any new allowable modes.
-//				Link r5Link = this.mNetowrk.getLinks().get(linkId);
-//				Set<String> allowedModes =  new HashSet<>((Collection) r5Link.getAllowedModes());
-//				allowedModes.addAll(flagStrings);
-//				r5Link.setAllowedModes(allowedModes);
-//				log.info("Link already exists. ID: " + linkId);
-//			}
 		}
 	}
 
@@ -278,9 +259,9 @@ public class MNetfromR5_V2 {
 
 //		mn.buildMNet();
 		log.info("Finished building network.");
-		NetworkCleaner nC = new NetworkCleaner();
-		log.info("Running NetowrkCleaner");
-		nC.run(mn.mNetowrk);
+//		NetworkCleaner nC = new NetworkCleaner();
+//		log.info("Running NetowrkCleaner");
+//		nC.run(mn.mNetowrk);
 		log.info("Number of links:" + mn.mNetowrk.getLinks().size());
 		log.info("Number of nodes: " + mn.mNetowrk.getNodes().size());
 		mn.writeMNet(mNetPath);
