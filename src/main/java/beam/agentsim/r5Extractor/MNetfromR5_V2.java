@@ -250,7 +250,7 @@ public class MNetfromR5_V2 {
 				modeFlags.add(EdgeStore.EdgeFlag.valueOf(f));
 			}
 			System.out.println("USING MODE FLAGS HURRAY!!!!!!!!!");
-			mn = new MNetfromR5_V2(inFolder, osmPath, modeFlags);
+			mn = new MNetfromR5_V2(mNetPath, osmPath, modeFlags);
 		}
 		// otherwise use the default constructor
 		else {
